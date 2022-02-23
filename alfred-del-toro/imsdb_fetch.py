@@ -2,20 +2,23 @@ import random
 import requests
 from bs4 import BeautifulSoup
 
-baseURL = "https://imsdb.com/"
-allScripts = "all-scripts.html"
-scriptBase = "scripts/"
+BASE_URL = "https://imsdb.com/"
+ALL_SCRIPTS = "all-scripts.html"
+SCRIPT_BASE = "scripts/"
 
+class ScriptNotFoundException(Exception):
+    """Exception thrown when script could be found"""
+    pass
     
 def fetchMovieTitles():
-    page = requests.get(baseURL + allScripts)
+    page = requests.get(BASE_URL + ALL_SCRIPTS)
     soup = BeautifulSoup(page.content, "html.parser")
 
     tableMovieEntries = soup.find_all('p')
 
     movieTitles = []
     for p in tableMovieEntries:
-        movieTitles.append(p.find('a', href=True).contents[0])
+        movieTitles.append(p.find('a', href = True).contents[0])
     
     return movieTitles
 
@@ -25,10 +28,12 @@ def pickRandomMovie():
 
 def getMovieScript(movieTitle = pickRandomMovie()):
     parsedMovieTitle = movieTitle.replace(' ','-')
-    page = requests.get(baseURL+scriptBase+parsedMovieTitle+'.html')
+    page = requests.get(BASE_URL + SCRIPT_BASE + parsedMovieTitle + '.html')
     
     soup = BeautifulSoup(page.content, "html.parser")
-    script = soup.find(class_="scrtext").find('pre').text
+    script = soup.find(class_ = "scrtext").find('pre').text
 
-    return script
+    if len(script) <= 0:
+        raise ScriptNotFoundException
     
+    return script
