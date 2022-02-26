@@ -1,5 +1,6 @@
 import unittest
-from src import imsdb_fetch
+from src.imsdb import imsdb_fetch
+
 
 class TestMovieFetching(unittest.TestCase):
     def testFetchMovieTitlesSucceeds(self):

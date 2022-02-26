@@ -48,4 +48,12 @@ def getMovieScript(movieTitle=pickRandomMovie()):
     if len(script) <= 0:
         raise ScriptNotFoundException
 
+    script = cleanScript(script)
+
     return script
+
+def cleanScript(movie_script):
+    movie_script = movie_script.split("\r\n")
+    movie_script = [i for i in movie_script if i and not i.isspace()]
+
+    return movie_script
